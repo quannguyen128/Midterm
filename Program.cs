@@ -51,7 +51,6 @@ namespace MidTerm
                                             orderby s.AuthorLastName
                                             group s by s.Publisher;
 
-
                         foreach(var c in filtered)
                         {
                             Console.WriteLine($"--------Grouped by {c.Key} ----------\n");
