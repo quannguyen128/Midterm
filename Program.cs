@@ -6,8 +6,9 @@ namespace MidTerm
 {
     class Program
     {
-          public static void PrintBooksSortedbyLastNameGroupedbyPublisher()
+        public static void PrintBooksSortedbyLastNameGroupedbyPublisher()
         {
+            Console.WriteLine();
             using(var db = new AppDbContext())
             {
                  db.Database.EnsureDeleted();
@@ -46,11 +47,18 @@ namespace MidTerm
                         db.Authors.AddRange(books);  
                         db.SaveChanges(); 
                         var booksubset = db.Authors.ToList();
-                        var filtered = booksubset.OrderBy(b => b.AuthorLastName)
-                                                 .GroupBy(b => b.Publisher);
-                        
-                            Console.WriteLine(filtered);
-                        
+                        var filtered = from s in booksubset
+                                            orderby s.AuthorLastName
+                                            group s by s.Publisher;
+
+
+                        foreach(var c in filtered)
+                        {
+                            Console.WriteLine($"--------Grouped by {c.Key} ----------\n");
+                            foreach(var s in c){
+                                Console.WriteLine(s);
+                            }
+                        }              
                         
             }
         }
@@ -372,6 +380,7 @@ namespace MidTerm
                         db.Authors.AddRange(books);  
                         db.SaveChanges(); 
                         var booksubset = db.Authors.ToList();
+                        var minLength = booksubset.Min(s => s.AuthorFirstName.Length);
                         var filtered = booksubset.OrderBy(b => b.AuthorFirstName.Length).First();  
                         Console.WriteLine(filtered);
                         
@@ -425,8 +434,8 @@ namespace MidTerm
 
         static void Main(string[] args)
         {
-            // PrintAllRecordsToConsole(); 
-            // PrintBooksPublishedbyApress();  
+            //PrintAllRecordsToConsole(); 
+            //PrintBooksPublishedbyApress();  
             //PrintAuthorsWithShortestName();
             //PrintFirstInstanceofAdam();
             //PrintBookWith1000PlusPages();
@@ -434,6 +443,8 @@ namespace MidTerm
             //PrintBooksOrderedbyTitleDescending();
             //PrintBooksGroupedbyPublisher(); 
             PrintBooksSortedbyLastNameGroupedbyPublisher();
+
+            
         }
     }
 }
